@@ -1,0 +1,280 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  border: 0 none;
+  font-family: arial;
+  height: 100%;
+  min-height: 100%;
+  overflow: auto;
+}
+
+body.dark {
+  background-color: #333;
+  color: #e7e7e7;
+}
+
+.preview {
+  border: #333 1px solid;
+  margin: 0;
+  padding: 0;
+
+  width: 1200px;
+  height: 800px;
+
+  /* box shadow */
+  -webkit-box-shadow: 0 0 20px #000;
+  -moz-box-shadow: 0 0 20px #000;
+  box-shadow: 0 0 20px #000;
+}
+.dark .preview {
+  border: #666 1px solid;
+}
+
+a.link {
+  color: #07D;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 10px;
+  display: block;
+  word-wrap: break-word;
+  width: 200px;
+  padding: 10px;
+}
+.dark a.link {
+  color: #7AF;
+}
+
+pre {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 16px;
+  padding: 10px;
+  margin: 0;
+  text-align: left;
+  display: inline-block;
+  width: auto;
+}
+
+button.add,
+button.mvup,
+button.mvdn,
+button.editt,
+button.del {
+  line-height: 2px;
+  height: 23px;
+  width: 23px;
+  cursor: pointer;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 12px;
+  margin: 0 0 0 2px;
+}
+
+  button.editt {
+    margin: 2px 0 2px 10px;
+  }
+
+  button.editt,
+  button.mvup,
+  button.mvdn {
+    background-color: #bcf;
+    color: #357;
+    border: 1px solid #07D;
+  }
+
+    .dark button.editt,
+    .dark button.mvup,
+    .dark button.mvdn {
+      background-color: #07D;
+      color: #bcf;
+      border: 1px solid #98b2ff;
+    }
+
+  button.del {
+    background-color: #FAA;
+    color: #700;
+    border: 1px solid #600;
+  }
+
+    .dark button.del {
+      background-color: #600;
+      color: #FAA;
+      border: 1px solid #A00;
+    }
+
+  button.add {
+    font-weight: bold;
+    font-size: 20px;
+    background-color: #0A0;
+    color: #060;
+    border: 1px solid #060;
+  }
+
+    .dark button.add {
+      background-color: #060;
+      color: #AFA;
+      border: 1px solid #0A0;
+    }
+
+div.form {
+  padding: 10px;
+  margin: 0 0 50px 0;
+}
+
+.edit-list {
+  width: 645px;
+}
+
+.edit-list li {
+  width: auto;
+  background: transparent;
+}
+
+.edit-list li:hover {
+  background: rgba(0, 128, 255, .125);
+}
+
+.edit-list span.times {
+  display: inline-block;
+  opacity: .6;
+  width: 30px;
+  text-align: right;
+  margin: 0 5px 0 0;
+}
+
+.edit-list span.task {
+  display: inline-block;
+  width: 500px;
+  border-bottom: 1px solid #DADADA;
+}
+
+.dark .edit-list span.task {
+  border-bottom: 1px solid #555;
+}
+
+.edit-list span.task.category {
+  font-weight: bold;
+  border-bottom: 0 none;
+  position: relative;
+  left: -30px;
+}
+
+table.taskTable div.cell {
+  border: 2px solid #AAA;
+  margin: 1px;
+  min-width: 50px;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 20px;
+  padding: 0;
+  background: #FCFCFC;
+}
+
+table.taskTable div.cell.an {
+  border-top-style: dashed;
+  border-bottom-style: dashed;
+}
+
+table.taskTable div.cell.task {
+  padding: 0 20px;
+  border-color: #0A0;
+  color: #060;
+  background: #EFE;
+}
+
+table.taskTable div.cell.day {
+  border-color: #A0A;
+  color: #707;
+  background: #FEE;
+}
+
+.dark table.taskTable div.cell {
+  border-color: #666;
+  color: #CCC;
+  background: #444;
+}
+
+.dark table.taskTable div.cell.task {
+  border-color: #060;
+  color: #AFA;
+  background: #343;
+}
+
+table.taskTable div.cell.task.category {
+  border: 0 none;
+  color: #000;
+  background: transparent;
+}
+
+.dark table.taskTable div.cell.task.category {
+  color: #FFF;
+}
+
+.dark table.taskTable div.cell.day {
+  border-color: #A0A;
+  color: #F7F;
+  background: #424;
+}
+
+table.taskTable div.cell.empty {
+  border-color: transparent;
+  background: transparent;
+}
+
+button.light-switch {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #9CF;
+  font-size: 50px;
+  border: 1px solid #000;
+  height: 50px;
+  line-height: 1px;
+  width: 50px;
+  border-radius: 25px;
+  cursor: pointer;
+}
+
+button.light-switch div {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  top: 12px;
+  left: 12px;
+  background: #ff0;
+  border-radius: 12px;
+}
+
+.dark button.light-switch {
+  background-color: #00377a;
+  border: 1px solid #fff;
+}
+
+.dark button.light-switch div {
+  background: #00377a;
+  left: 16px;
+  border: 8px solid #FFE;
+  border-right: 0;
+  border-top: 4px;
+  border-bottom: 4px;
+}
+
+button.edit {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background-color: #F0F0F0;
+  border: 1px solid #000;
+  height: 50px;
+  line-height: 1px;
+  font-size: 18px;
+  padding: 0 20px;
+  border-radius: 25px;
+  cursor: pointer;
+}
+
+.dark button.edit {
+  background-color: #555;
+  border: 1px solid #FFF;
+  color: #CCC;
+}
