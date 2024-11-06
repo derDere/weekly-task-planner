@@ -278,3 +278,35 @@ button.edit {
   border: 1px solid #FFF;
   color: #CCC;
 }
+
+@media print
+{
+    button.edit,
+    button.light-switch
+    {
+        display: none !important;
+    }
+
+    .page {
+      height: auto;
+    }
+
+    .cell {
+      background: transparent;
+      border: 2px solid #555;
+    }
+
+    .cell.task {
+      border-color: #070;
+      color: #070;
+    }
+
+    .cell.day {
+      border-color: #707;
+      color: #707;
+    }
+
+    .cell.task.category {
+      color: #000;
+    }
+}

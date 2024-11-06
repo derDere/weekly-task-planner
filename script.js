@@ -102,7 +102,7 @@ function AddTask() {
     alert("Times is not a number!");
     return;
   }
-  if (times < 0 || times > 6) {
+  if (times < -1 || times > 6) {
     alert("Times is out of range!");
     return;
   }
@@ -184,7 +184,21 @@ function changeDayOff(e) {
   WriteData(newStore);
 }
 
+function AddLightSwitch() {
+  let lightSwitch = document.createElement("button");
+  lightSwitch.className = "light-switch";
+  lightSwitch.onclick = ToggleDarkMode;
+  lightSwitch.appendChild(document.createElement("div"));
+  document.body.appendChild(lightSwitch);
+}
+
 function ShowForm(data) {
+  AddLightSwitch();
+  let editBtn = document.querySelector(".edit");
+  if (editBtn) {
+    editBtn.remove();
+  }
+
   let container = document.getElementById("container");
   let table = document.createElement("table");
   table.cellPadding = 0;
@@ -347,9 +361,16 @@ function ShowForm(data) {
   let url = document.location.href;
   url = url.replace(/#.*$/, "");
   url += "#" + jjq;
-  frame.src = url;
   link.href = url;
   link.innerHTML = url;
+
+  dataNoEdit.p = true;
+  jjq = JSON.stringify(dataNoEdit);
+  jjq = encodeURIComponent(jjq);
+  url = document.location.href;
+  url = url.replace(/#.*$/, "");
+  url += "#" + jjq;
+  frame.src = url;
 
   store = data;
   WriteData(data);
@@ -363,17 +384,27 @@ function DisplayTable() {
   table.border = 0;
   table.className = "taskTable";
 
-  let empty = document.createElement("tr");
-  table.appendChild(empty);
-  let emptyTd = document.createElement("td");
-  emptyTd.colSpan = 7;
-  empty.appendChild(emptyTd);
-  /*
-  let emptyCell = document.createElement("div");
-  emptyCell.className = "cell empty";
-  emptyCell.innerHTML = "Wochenplan";
-  emptyTd.appendChild(emptyCell);
-  */
+  if (!store.p) {
+    let editBtn = document.createElement("button");
+    editBtn.className = "edit";
+    editBtn.innerHTML = "Edit";
+    editBtn.onclick = EditMode;
+    document.body.appendChild(editBtn);
+
+    AddLightSwitch();
+  }
+
+  if (store.t[0][1] == -1) {
+    let title = document.createElement("tr");
+    table.appendChild(title);
+    let titleTd = document.createElement("td");
+    titleTd.colSpan = 7;
+    title.appendChild(titleTd);
+    let titleDiv = document.createElement("div");
+    titleDiv.className = "cell task category";
+    titleDiv.innerText = store.t[0][0];
+    titleTd.appendChild(titleDiv);
+  }
 
   let tr = document.createElement("tr");
   table.appendChild(tr)
@@ -392,6 +423,10 @@ function DisplayTable() {
 
   for (let i = 0; i < store.t.length; i++) {
     let [task, times] = store.t[i];
+
+    if (times == -1 && i == 0) {
+      continue;
+    }
 
     tr = document.createElement("tr");
     table.appendChild(tr);
@@ -432,48 +467,6 @@ function DisplayTable() {
       td.appendChild(cell);
     }
   }
-
-  /*
-  for(let i = 0; i < 2; i++) {
-    let empty = document.createElement("tr");
-    table.appendChild(empty);
-    let emptyTd = document.createElement("td");
-    emptyTd.colSpan = 7;
-    empty.appendChild(emptyTd);
-    let emptyCell = document.createElement("div");
-    emptyCell.className = "cell empty";
-    if (i == 1) {
-      emptyCell.innerHTML = "Nach Bedarf";
-    }
-    emptyTd.appendChild(emptyCell);
-  }
-  */
-
-  /*
-  for (let i = 0; i < store.t.length; i++) {
-    let [task, times] = store.t[i];
-    if (times > 0) {
-      continue;
-    }
-
-    let tr = document.createElement("tr");
-    table.appendChild(tr);
-
-    let td = document.createElement("td");
-    tr.appendChild(td);
-    let cell = document.createElement("div");
-    cell.className = "cell task";
-    cell.innerText = task;
-    td.appendChild(cell);
-
-    td = document.createElement("td");
-    td.colSpan = 6;
-    tr.appendChild(td);
-    cell = document.createElement("div");
-    cell.className = "cell";
-    td.appendChild(cell);
-  }
-  */
 
   container.innerHTML = "";
   container.appendChild(table);
