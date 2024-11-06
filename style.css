@@ -132,6 +132,10 @@ div.form {
   background: rgba(0, 128, 255, .125);
 }
 
+.dark .edit-list li:hover {
+  background: rgba(0, 128, 255, .25);
+}
+
 .edit-list span.times {
   display: inline-block;
   opacity: .6;
