@@ -65,15 +65,15 @@ function ExampleData() {
   return {
     do: 6, // Day off
     t: [
-      ["Kategory 1", -1],
+      ["Category 1", -1],
       ["Task 1", 1],
       ["Task 2", 2],
       ["Task 3", 3],
-      ["Kategory 2", -1],
+      ["Category 2", -1],
       ["Task 4", 4],
       ["Task 5", 5],
       ["Task 6", 6],
-      ["Kategory 3", -1],
+      ["Category 3", -1],
       ["Task 7", 0]
     ]
   };
@@ -401,7 +401,7 @@ function DisplayTable() {
     titleTd.colSpan = 7;
     title.appendChild(titleTd);
     let titleDiv = document.createElement("div");
-    titleDiv.className = "cell task category";
+    titleDiv.className = "cell task category first-category";
     titleDiv.innerText = store.t[0][0];
     titleTd.appendChild(titleDiv);
   }
@@ -420,6 +420,9 @@ function DisplayTable() {
     cell.innerText = dayName(i);
     td.appendChild(cell);
   }
+
+  let lastCell = null;
+  let lastWasCategory = false;
 
   for (let i = 0; i < store.t.length; i++) {
     let [task, times] = store.t[i];
@@ -440,6 +443,10 @@ function DisplayTable() {
     cell.className = "cell task";
     if (times == -1) {
       cell.className += " category";
+      if (!!lastCell) {
+        lastCell.className += " last-cell";
+        lastCell = null;
+      }
     }
     cell.innerText = task;
     td.appendChild(cell);
@@ -457,6 +464,9 @@ function DisplayTable() {
       if (times == 4 && j == 3) {
         colSpan = 2;
       }
+      if (times == 5 && j == 2) {
+        colSpan = 2;
+      }
       td.colSpan = colSpan;
       tr.appendChild(td);
       let cell = document.createElement("div");
@@ -464,8 +474,20 @@ function DisplayTable() {
       if (isaAN) {
         cell.className += " an";
       }
+      if (lastWasCategory) {
+        if (j == times - 1) {
+          cell.className += " top-last-cell";
+        }
+      }
       td.appendChild(cell);
+      lastCell = cell;
     }
+
+    lastWasCategory = times == -1;
+  }
+
+  if (!!lastCell) {
+    lastCell.className += " last-cell";
   }
 
   container.innerHTML = "";

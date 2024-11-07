@@ -179,17 +179,29 @@ table.taskTable div.cell.an {
   border-bottom-style: dashed;
 }
 
+table.taskTable div.cell.last-cell {
+  border-radius: 0 0 15px 0;
+}
+table.taskTable div.cell.top-last-cell {
+  border-radius: 0 15px 0 0;
+}
+table.taskTable div.cell.top-last-cell.last-cell {
+  border-radius: 0 15px 15px 0;
+}
+
 table.taskTable div.cell.task {
   padding: 0 20px;
   border-color: #0A0;
   color: #060;
   background: #EFE;
+  border-radius: 15px 0 0 15px;
 }
 
 table.taskTable div.cell.day {
   border-color: #A0A;
   color: #707;
   background: #FEE;
+  border-radius: 15px 15px 0 0;
 }
 
 .dark table.taskTable div.cell {
@@ -206,8 +218,10 @@ table.taskTable div.cell.day {
 
 table.taskTable div.cell.task.category {
   border: 0 none;
-  color: #000;
+  color: #38E;
   background: transparent;
+  font-size: 24px;
+  font-weight: bold;
 }
 
 .dark table.taskTable div.cell.task.category {
