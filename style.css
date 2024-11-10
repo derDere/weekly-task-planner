@@ -161,6 +161,26 @@ div.form {
   left: -30px;
 }
 
+table.taskTable {
+  position: relative;
+  z-index: 2;
+}
+
+div#top-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 90px;
+  background-color: #FFF;
+  opacity: .85;
+  z-index: 3;
+}
+
+.dark div#top-bar {
+  background-color: #333;
+}
+
 table.taskTable div.cell {
   border: 2px solid #AAA;
   margin: 1px;
@@ -172,6 +192,20 @@ table.taskTable div.cell {
   font-size: 20px;
   padding: 0;
   background: #FCFCFC;
+
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  cursor: pointer;
+}
+
+table.taskTable div.cell.day,
+table.taskTable div.cell.task,
+table.taskTable div.cell.category {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  cursor: default;
 }
 
 table.taskTable div.cell.an {
@@ -251,6 +285,7 @@ button.light-switch {
   width: 50px;
   border-radius: 25px;
   cursor: pointer;
+  z-index: 4;
 }
 
 button.light-switch div {
@@ -289,6 +324,7 @@ button.edit {
   padding: 0 20px;
   border-radius: 25px;
   cursor: pointer;
+  z-index: 4;
 }
 
 .dark button.edit {
@@ -297,10 +333,71 @@ button.edit {
   color: #CCC;
 }
 
+button.new-session,
+button.join-session,
+button.icon-btn {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  background-color: #F0F0F0;
+  border: 1px solid #000;
+  height: 50px;
+  width: 150px;
+  line-height: 1px;
+  font-size: 18px;
+  padding: 0;
+  border-radius: 25px;
+  cursor: pointer;
+  text-align: center;
+  vertical-align: middle;
+  z-index: 4;
+}
+
+button.icon-btn {
+  width: 50px;
+  margin-left: -25px;
+  border-radius: 0;
+}
+
+button.icon-btn.round {
+  border-radius: 25px;
+}
+
+button.new-session {
+  margin-left: -177px;
+  border-radius: 25px 0 0 25px;
+}
+
+button.join-session {
+  margin-left: 27px;
+  border-radius: 0 25px 25px 0;
+}
+
+.dark button.new-session,
+.dark button.join-session,
+.dark button.icon-btn {
+  background-color: #555;
+  border: 1px solid #FFF;
+  color: #CCC;
+}
+
+div.session-id {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  color: #777;
+  font-size: 12px;
+  z-index: 1;
+}
+
 @media print
 {
     button.edit,
-    button.light-switch
+    button.light-switch,
+    button.new-session,
+    button.join-session,
+    div.session-id,
+    div#top-bar
     {
         display: none !important;
     }

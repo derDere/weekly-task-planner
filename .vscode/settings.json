@@ -1,0 +1,6 @@
+{
+  "pylint.args": [],
+  "python.analysis.diagnosticSeverityOverrides" : {
+    "reportArgumentType": "none"
+  }
+}

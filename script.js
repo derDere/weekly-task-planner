@@ -1,6 +1,6 @@
 var store = null;
 
-function dayName(dayIndex) {
+function dayName(dayIndex) { /////////////////////////////////////////////////////////////////////
   // 0:Mo, 1:Di, 2:Mi, 3:Do, 4:Fr, 5:Sa, 6:So
   let t = new Date('1992-03-08');
   let day = t.getDay();
@@ -8,7 +8,7 @@ function dayName(dayIndex) {
   return t.toLocaleDateString(undefined, {weekday: 'short'});
 }
 
-function ReadData() {
+function ReadData() { /////////////////////////////////////////////////////////////////////
   let jj = document.location.hash;
   if (!jj) {
     return {};
@@ -19,12 +19,12 @@ function ReadData() {
   return jo;
 }
 
-function WriteData(data) {
+function WriteData(data) { /////////////////////////////////////////////////////////////////////
   let jj = JSON.stringify(data);
   document.location.hash = jj;
 }
 
-function UpdateDisplay(newStore) {
+function UpdateDisplay(newStore) { /////////////////////////////////////////////////////////////////////
   store = newStore;
   if (!!store.d) {
     document.body.className = "dark";
@@ -37,31 +37,27 @@ function UpdateDisplay(newStore) {
   } else if (!!(store.e)) {
     ShowForm(store);
   } else {
-    /*
-    let container = document.getElementById("container");
-    let jj = JSON.stringify(store, null, 2);
-    container.innerHTML = "<pre>" + jj + "</pre>";
-    */
     DisplayTable();
   }
 }
 
-function CheckUpdate(newStore) {
+function CheckUpdate(newStore) { /////////////////////////////////////////////////////////////////////
   let jj1 = JSON.stringify(store);
   let jj2 = JSON.stringify(newStore);
   return jj1 != jj2;
 }
 
-function Tick() {
+function Tick() { /////////////////////////////////////////////////////////////////////
   let newData = ReadData();
   if (CheckUpdate(newData)) {
     UpdateDisplay(newData);
   }
+  if (store.s && !SessionUpdateInterval) {
+    SessionUpdateInterval = setInterval(SessionUpdate, 2000);
+  }
 }
 
-setInterval(Tick, 200);
-
-function ExampleData() {
+function ExampleData() { /////////////////////////////////////////////////////////////////////
   return {
     do: 6, // Day off
     t: [
@@ -79,19 +75,26 @@ function ExampleData() {
   };
 }
 
-function ToggleDarkMode() {
+function ToggleDarkMode() { /////////////////////////////////////////////////////////////////////
   let newStore = JSON.parse(JSON.stringify(store));
   newStore.d = !store.d;
   WriteData(newStore);
 }
 
-function EditMode() {
+function EditMode() { /////////////////////////////////////////////////////////////////////
   let newStore = JSON.parse(JSON.stringify(store));
   newStore.e = true;
   WriteData(newStore);
 }
 
-function AddTask() {
+function AddTask() { /////////////////////////////////////////////////////////////////////
+  if (!store.t) {
+    store.t = [];
+  }
+  if (store.t.length > 50) {
+    alert("Too many tasks! Your life is not just work, slow down and relay a bit!");
+    return;
+  }
   let task = document.getElementById("newTask").value;
   if (!task) {
     alert("Task name is empty!");
@@ -111,7 +114,7 @@ function AddTask() {
   WriteData(newStore);
 }
 
-function EditTask(e) {
+function EditTask(e) { /////////////////////////////////////////////////////////////////////
   let index = e.target.dataset.index;
   let task = store.t[index][0];
   let times = store.t[index][1];
@@ -149,7 +152,7 @@ function EditTask(e) {
   WriteData(newStore);
 }
 
-function MoveUpTask(e) {
+function MoveUpTask(e) { /////////////////////////////////////////////////////////////////////
   let index = parseInt(e.target.dataset.index);
   let newStore = JSON.parse(JSON.stringify(store));
   if (index > 0) {
@@ -160,7 +163,7 @@ function MoveUpTask(e) {
   WriteData(newStore);
 }
 
-function MoveDnTask(e) {
+function MoveDnTask(e) { /////////////////////////////////////////////////////////////////////
   let index = parseInt(e.target.dataset.index);
   let newStore = JSON.parse(JSON.stringify(store));
   if (index < newStore.t.length - 1) {
@@ -171,20 +174,20 @@ function MoveDnTask(e) {
   WriteData(newStore);
 }
 
-function DelTask(e) {
+function DelTask(e) { /////////////////////////////////////////////////////////////////////
   let index = e.target.dataset.index;
   let newStore = JSON.parse(JSON.stringify(store));
   newStore.t.splice(index, 1);
   WriteData(newStore);
 }
 
-function changeDayOff(e) {
+function changeDayOff(e) { /////////////////////////////////////////////////////////////////////
   let newStore = JSON.parse(JSON.stringify(store));
   newStore.do = e.target.value;
   WriteData(newStore);
 }
 
-function AddLightSwitch() {
+function AddLightSwitch() { /////////////////////////////////////////////////////////////////////
   let lightSwitch = document.createElement("button");
   lightSwitch.className = "light-switch";
   lightSwitch.onclick = ToggleDarkMode;
@@ -192,12 +195,21 @@ function AddLightSwitch() {
   document.body.appendChild(lightSwitch);
 }
 
-function ShowForm(data) {
+function ShowForm(data) { /////////////////////////////////////////////////////////////////////
   AddLightSwitch();
   let editBtn = document.querySelector(".edit");
   if (editBtn) {
     editBtn.remove();
   }
+  let joinSessionBtn = document.querySelector(".join-session");
+  if (joinSessionBtn) {
+    joinSessionBtn.remove();
+  }
+  let newSessionBtn = document.querySelector(".new-session");
+  if (newSessionBtn) {
+    newSessionBtn.remove();
+  }
+  document.getElementById("top-bar").style.display = "none";
 
   let container = document.getElementById("container");
   let table = document.createElement("table");
@@ -226,7 +238,7 @@ function ShowForm(data) {
   link.id = "link";
   link.className = "link";
   link.href = document.location.href;
-  link.innerHTML = link.href;
+  link.innerText = link.href;
   linkTd.appendChild(link);
   ////////////////////////////////////////////////////
   if (!data) {
@@ -235,7 +247,7 @@ function ShowForm(data) {
   }
   ////////////////////////////////////////////////////
   let dayOffLabel = document.createElement("label");
-  dayOffLabel.innerHTML = "Day off: ";
+  dayOffLabel.innerText = "Day off: ";
   dayOffLabel.htmlFor = "do";
   form.appendChild(dayOffLabel);
   let dayOffSelect = document.createElement("select");
@@ -246,7 +258,7 @@ function ShowForm(data) {
   for (let i = 0; i < 7; i++) {
     let option = document.createElement("option");
     option.value = i;
-    option.innerHTML = dayName(i);
+    option.innerText = dayName(i);
     dayOffSelect.appendChild(option);
   }
   dayOffSelect.value = data.do;
@@ -286,7 +298,7 @@ function ShowForm(data) {
     let editBtn = document.createElement("button");
     editBtn.className = "editt";
     editBtn.dataset.index = i;
-    editBtn.innerHTML = "✎";
+    editBtn.innerText = "✎";
     editBtn.title = "Edit: " + task;
     taskLi.appendChild(editBtn);
     editBtn.onclick = EditTask;
@@ -310,7 +322,7 @@ function ShowForm(data) {
     let delBtn = document.createElement("button");
     delBtn.className = "del";
     delBtn.dataset.index = i;
-    delBtn.innerHTML = "🗙";
+    delBtn.innerText = "🗙";
     delBtn.title = "Delete: " + task;
     taskLi.appendChild(delBtn);
     delBtn.onclick = DelTask;
@@ -328,10 +340,10 @@ function ShowForm(data) {
     let option = document.createElement("option");
     option.value = i;
     if (i == -1) {
-      option.innerHTML = "Kategory";
+      option.innerText = "Kategory";
     }
     else if (i == 0) {
-      option.innerHTML = "As needed";
+      option.innerText = "As needed";
     }
     else {
       option.innerText = i + 'x';
@@ -345,13 +357,13 @@ function ShowForm(data) {
 
   let addBtn = document.createElement("button");
   addBtn.className = "add";
-  addBtn.innerHTML = "+";
+  addBtn.innerText = "+";
   form.appendChild(addBtn);
   addBtn.onclick = AddTask;
   ////////////////////////////////////////////////////
   container.innerHTML = "";
   let h2 = document.createElement("h2");
-  h2.innerHTML = "Weekly Task Planner";
+  h2.innerText = "Weekly Task Planner";
   container.appendChild(h2);
   container.appendChild(table);
   let dataNoEdit = JSON.parse(JSON.stringify(data));
@@ -362,7 +374,7 @@ function ShowForm(data) {
   url = url.replace(/#.*$/, "");
   url += "#" + jjq;
   link.href = url;
-  link.innerHTML = url;
+  link.innerText = url;
 
   dataNoEdit.p = true;
   jjq = JSON.stringify(dataNoEdit);
@@ -376,7 +388,129 @@ function ShowForm(data) {
   WriteData(data);
 }
 
-function DisplayTable() {
+function GetPostData(data) { /////////////////////////////////////////////////////////////////////
+  let method = data ? "POST" : "GET";
+  let address = "/" + (store.s ?? "new");
+  let post_body = data ? JSON.stringify(data) : null;
+  // ajax request
+  let xhr = new XMLHttpRequest();
+  xhr.open(method, address, true);
+  if (method == "POST") {
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.send(post_body);
+  }
+  else {
+    xhr.send();
+  }
+  return new Promise((resolve, reject) => {
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState == 4) {
+        if (xhr.status == 200) {
+          let response = xhr.responseText;
+          response = JSON.parse(response);
+          if (response.status == 'error') {
+            reject(response.message);
+          }
+          else {
+            resolve(response);
+          }
+        }
+        else {
+          reject(xhr.status);
+        }
+      }
+    };
+  });
+}
+
+var SessionUpdateInterval = null;
+
+async function NewSession() { /////////////////////////////////////////////////////////////////////
+  let newStore = await GetPostData(store);
+  WriteData(newStore);
+  if (SessionUpdateInterval) {
+    clearInterval(SessionUpdateInterval);
+  }
+  SessionUpdateInterval = setInterval(SessionUpdate, 2000);
+}
+
+async function JoinSession() { /////////////////////////////////////////////////////////////////////
+  let sessionId = prompt("Enter session ID:");
+  if (!sessionId) {
+    return;
+  }
+  store.s = sessionId;
+  let newStore = await GetPostData();
+  console.log(newStore);
+  WriteData(newStore);
+  if (SessionUpdateInterval) {
+    clearInterval(SessionUpdateInterval);
+  }
+  SessionUpdateInterval = setInterval(SessionUpdate, 2000);
+}
+
+function SessionUpdate() { /////////////////////////////////////////////////////////////////////
+  GetPostData().then(newStore => {
+    newStore.d = store.d;
+    WriteData(newStore);
+  }).catch(error => {
+    let newStore = JSON.parse(JSON.stringify(store));
+    delete newStore['s'];
+    if (SessionUpdateInterval) {
+      clearInterval(SessionUpdateInterval);
+    }
+    WriteData(newStore);
+  });
+}
+
+function CheckTask(e) { /////////////////////////////////////////////////////////////////////
+  let task = parseInt(e.target.dataset.task);
+  let time = parseInt(e.target.dataset.time);
+  let an = e.target.dataset.an == "true";
+  let icon = document.querySelector(".icon-btn").innerText;
+  if (store.s) {
+    let postData = [task, time, icon];
+    GetPostData(postData).then(newStore => {
+      newStore.d = store.d;
+      WriteData(newStore);
+    });
+  }
+  else {
+    let newStore = JSON.parse(JSON.stringify(store));
+    if (an) {
+      newStore.c[task].push(icon);
+      while (newStore.c[task].length > 10) {
+        newStore.c[task].shift();
+      }
+    }
+    else {
+      if (newStore.c[task][time].length > 0) {
+        newStore.c[task][time] = "";
+      }
+      else {
+        newStore.c[task][time] = icon;
+      }
+    }
+    WriteData(newStore);
+  }
+}
+
+const ICONS = ["❌", "🔴", "🟡", "🟢", "🔵", "🟣", "🟤", "⚫", "✅", "☑️", "✔️", "💚", "💜", "❤️", "💛", "💙", "🤎", "🖤", "🤍"];
+var iconIndex = 0;
+if (window.localStorage.getItem("iconIndex")) {
+  iconIndex = parseInt(window.localStorage.getItem("iconIndex"));
+}
+
+function ChangeIcon(e) { /////////////////////////////////////////////////////////////////////
+  iconIndex++;
+  if (iconIndex >= ICONS.length) {
+    iconIndex = 0;
+  }
+  e.target.innerText = ICONS[iconIndex];
+  window.localStorage.setItem("iconIndex", iconIndex);
+}
+
+function DisplayTable() { /////////////////////////////////////////////////////////////////////
   let container = document.getElementById("container");
   let table = document.createElement("table");
   table.cellPadding = 0;
@@ -384,14 +518,99 @@ function DisplayTable() {
   table.border = 0;
   table.className = "taskTable";
 
-  if (!store.p) {
-    let editBtn = document.createElement("button");
-    editBtn.className = "edit";
-    editBtn.innerHTML = "Edit";
-    editBtn.onclick = EditMode;
-    document.body.appendChild(editBtn);
+  let showTopBar = false;
+
+  if ((!store.p) && (!store.s)) {
+    if (!document.querySelector(".edit")) {
+      let editBtn = document.createElement("button");
+      editBtn.className = "edit";
+      editBtn.innerText = "Edit";
+      editBtn.onclick = EditMode;
+      document.body.appendChild(editBtn);
+    }
+
+    showTopBar = true;
 
     AddLightSwitch();
+  }
+  else {
+    let editBtn = document.querySelector(".edit");
+    if (editBtn) {
+      editBtn.remove();
+    }
+
+    if (!store.p) {
+      AddLightSwitch();
+    }
+  }
+
+  if (!store.p) {
+    if (!document.querySelector(".icon-btn")) {
+      let iconBtn = document.createElement("button");
+      iconBtn.className = "icon-btn";
+      if (store.s) {
+        iconBtn.className += ' round';
+      }
+      iconBtn.innerText = ICONS[iconIndex];
+      iconBtn.onclick = ChangeIcon;
+      document.body.appendChild(iconBtn);
+    }
+  } else {
+    let iconBtn = document.querySelector(".icon-btn");
+    if (iconBtn) {
+      iconBtn.remove();
+    }
+  }
+
+  if ((!store.p) && (!store.s)) {
+    if (!document.getElementById("new-session")) {
+      let newSessionBtn = document.createElement("button");
+      newSessionBtn.id = "new-session";
+      newSessionBtn.className = "new-session";
+      newSessionBtn.innerText = "New Session";
+      newSessionBtn.onclick = NewSession;
+      document.body.appendChild(newSessionBtn);
+    }
+
+    if (!document.getElementById("join-session")) {
+      let joinSessionBtn = document.createElement("button");
+      joinSessionBtn.id = "join-session";
+      joinSessionBtn.className = "join-session";
+      joinSessionBtn.innerText = "Join Session";
+      joinSessionBtn.onclick = JoinSession;
+      document.body.appendChild(joinSessionBtn);
+    }
+
+    let sessionIdInfo = document.querySelector(".session-id");
+    if (sessionIdInfo) {
+      sessionIdInfo.remove();
+    }
+
+    showTopBar = true;
+  }
+  else {
+    console.log("Removing session buttons");
+    let newSessionBtn = document.getElementById("new-session");
+    if (newSessionBtn) {
+      newSessionBtn.remove();
+    }
+
+    let joinSessionBtn = document.getElementById("join-session");
+    if (joinSessionBtn) {
+      joinSessionBtn.remove();
+    }
+
+    let sessionIdInfo = document.createElement("div");
+    sessionIdInfo.className = "session-id";
+    sessionIdInfo.innerText = store.s;
+    document.body.appendChild(sessionIdInfo);
+  }
+
+  if (showTopBar) {
+    document.getElementById("top-bar").style.display = "block";
+  }
+  else {
+    document.getElementById("top-bar").style.display = "none";
   }
 
   if (store.t[0][1] == -1) {
@@ -471,9 +690,21 @@ function DisplayTable() {
       tr.appendChild(td);
       let cell = document.createElement("div");
       cell.className = "cell";
+      cell.dataset.task = i;
+      cell.dataset.time = j;
       if (isaAN) {
         cell.className += " an";
+        cell.dataset.an = true;
+        if (store.c) {
+          cell.innerText = store.c[i].join("");
+        }
+      } else {
+        cell.dataset.an = false;
+        if (store.c) {
+          cell.innerText = store.c[i][j] ?? "";
+        }
       }
+      cell.onclick = CheckTask;
       if (lastWasCategory) {
         if (j == times - 1) {
           cell.className += " top-last-cell";
@@ -493,3 +724,10 @@ function DisplayTable() {
   container.innerHTML = "";
   container.appendChild(table);
 }
+
+/////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
+
+setInterval(Tick, 200);
