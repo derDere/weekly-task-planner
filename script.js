@@ -548,9 +548,6 @@ function DisplayTable() { //////////////////////////////////////////////////////
     if (!document.querySelector(".icon-btn")) {
       let iconBtn = document.createElement("button");
       iconBtn.className = "icon-btn";
-      if (store.s) {
-        iconBtn.className += ' round';
-      }
       iconBtn.innerText = ICONS[iconIndex];
       iconBtn.onclick = ChangeIcon;
       document.body.appendChild(iconBtn);
@@ -559,6 +556,18 @@ function DisplayTable() { //////////////////////////////////////////////////////
     let iconBtn = document.querySelector(".icon-btn");
     if (iconBtn) {
       iconBtn.remove();
+    }
+  }
+
+  if (store.s) {
+    let iconBtn = document.querySelector(".icon-btn");
+    if (iconBtn) {
+      iconBtn.classList.add("round");
+    }
+  } else {
+    let iconBtn = document.querySelector(".icon-btn");
+    if (iconBtn) {
+      iconBtn.classList.remove("round");
     }
   }
 
