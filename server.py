@@ -2,6 +2,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 import uuid
 import os
+import datetime
 
 
 def to_valid_int(value:object, min:int, max:int, default:int) -> int:
@@ -123,9 +124,12 @@ def WorkOnSession(session_id_str:str, params:dict[str,object]) -> object:
     task, time, icon = params
     data = LoadSessionData(session_id_str)
     if data['t'][task][1] == 0: # type: ignore
-       data['c'][task].append(icon) # type: ignore
-       if len(data['c'][task]) > 10: # type: ignore
-         data['c'][task] = data['c'][task][-10:] # type: ignore
+      if time <= -1: # type: ignore
+        data['c'][task] = [] # type: ignore
+      else:
+        data['c'][task].append(icon) # type: ignore
+        if len(data['c'][task]) > 10: # type: ignore
+          data['c'][task] = data['c'][task][-10:] # type: ignore
     else:
       if len(data['c'][task][time]) > 0: # type: ignore
         data['c'][task][time] = '' # type: ignore
@@ -136,6 +140,14 @@ def WorkOnSession(session_id_str:str, params:dict[str,object]) -> object:
 
 
 class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
+    def log_message(self, format, *args): # type: ignore
+        # Override this method to suppress standard messages
+        pass
+
+    def log_error(self, format, *args): # type: ignore
+        # Override this method to suppress error messages or customize the output
+        pass
+
     def do_GET(self) -> None:
         """
         Handle GET requests to serve specific files or respond with JSON data for GUID paths.
@@ -147,8 +159,31 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
             self.serve_file('style.css')
         elif self.path == '/script.js':
             self.serve_file('script.js')
-        elif self.path == '/favicon.ico':
-            self.serve_file('favicon.ico')
+        elif self.path == '/favicon.png':
+            self.serve_file('favicon.png')
+        elif self.path == '/appicon.png':
+            self.serve_file('appicon.png')
+        elif self.path == '/manifest.json':
+            # Serve the manifest file that always returns a new version based on the current datetime
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps({
+                'name': 'Weekly Task Planner',
+                'short_name': 'Weekly Tasks',
+                'autor': 'derDere',
+                'display': 'standalone',
+                'background_color': '#ffffff',
+                'theme_color': '#ffffff',
+                'version': datetime.datetime.now().strftime('%Y%m%d%H%M%S'),
+                'icons': [
+                    {
+                        'src': '/appicon.png',
+                        'sizes': '192x192',
+                        'type': 'image/png'
+                    }
+                ]
+            }).encode('utf-8'))
         # Serve GUID JSON response
         elif self.is_valid_uuid(self.path.strip('/')): # c32d8b45-92fe-44f6-8b61-42c2107dfe87
             guid = self.path.strip('/')
@@ -213,8 +248,8 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
                 self.send_header('Content-Type', 'text/css')
             elif filename.endswith('.js'):
                 self.send_header('Content-Type', 'application/javascript')
-            elif filename.endswith('.ico'):
-                self.send_header('Content-Type', 'image/x-icon')
+            elif filename.endswith('.png'):
+                self.send_header('Content-Type', 'image/png')
             self.end_headers()
             with open(filename, 'rb') as f:
                 self.wfile.write(f.read())

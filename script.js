@@ -495,19 +495,152 @@ function CheckTask(e) { ////////////////////////////////////////////////////////
   }
 }
 
-const ICONS = ["❌", "🔴", "🟡", "🟢", "🔵", "🟣", "🟤", "⚫", "✅", "☑️", "✔️", "💚", "💜", "❤️", "💛", "💙", "🤎", "🖤", "🤍"];
+const ICONS = [
+		"✔️",		"❌",   "✅",   "❎",    "☑️",    "✓",    "✖",     "V",      "X",
+		"🔴",		"🟠",   "🟡",   "🟢",    "🔵",    "🟣",   "🟤",    "⚫",    "🔘",
+		"❤️",		"🧡",   "💛",   "💚",    "💙",    "💜",   "🤎",    "🖤",    "🤍",
+		"🟥",		"🟧",   "🟨",   "🟩",    "🟦",    "🟪",   "🟫",    "⬛",    "⬜",
+		"🏳",		 "🏴",   "🏳‍🌈",   "🚩",    "🏁",    "🌍",    "🪐",    "🌌",    "🏔",
+		"🚗",		"🚑",   "🚀",   "🚁",    "✈",    "🚔",    "🚽",    "🌝",    "🌜",
+		"⭐",	 "☃",    "❄",    "⚡",    "🔥",    "🌈",    "🍕",    "🍔",    "🍟",
+		"🥓",	  "🍖",   "🥩",   "☕",    "🍷",    "🍺",    "🧊",    "🥝",    "🍇",
+		"🍌",		"🍆",   "🌸",   "🌶",     "🍄",   "🥑",   "🍀",     "🍁",    "🎈",
+		"🎃",		"🎁",   "🎄",    "✨",    "🎨",   "💋",   "⚽",     "⚾",    "🏀",
+		"🏈",		"🎱",		"🎳",   "⛳",    "⛸",    "🎮",   "🕹",     "🎲",    "🧿",
+		"🎺",		"🎸",		"🪕",   "🎻",    "🎹",   "🥁",    "🛡",    "🏹",    "🗡",
+		"🔫",		"☎",		"👩",   "👨",    "🧑",   "👧",   "👦",    "🧒",    "👶",
+		"👴",		"🧓",		 "👩‍🦰",   "👨‍🦰",    "👩‍🦱",    "👨‍🦱",   "👩‍🦲",    "👨‍🦲",    "👩‍🦳",
+		"👼",		"🤶",		 "🧛‍♀️",   "🧜‍♀️",    "🧙‍♂️",   "🧚‍♀️",   "🧟‍♀️",    "🧟‍♂️",   "😀",
+		"😍",		"😴",		 "🤑",   "😲",   "😭",   "😵",   "🤠",    "🤡",   "😈",
+		"☠",		"👻",		 "👽",   "👾",   "🤖",   "💩",   "😺",    "🐵",   "🐶",
+    "🏝",    "🌞",    "🌭",   "🍉",   "🧨",   "🏐",   "🎷",    "⚔",    "👵",
+    "👨‍🦳",   "😎",    "🤓",    "🐮",   "🐷",   "🐲",   "🐻",   "🐼",   "🐯"
+];
 var iconIndex = 0;
 if (window.localStorage.getItem("iconIndex")) {
   iconIndex = parseInt(window.localStorage.getItem("iconIndex"));
 }
 
+function SelectIcon(e) { /////////////////////////////////////////////////////////////////////
+  let i = parseInt(e.target.dataset.icon);
+  iconIndex = i;
+  let iconBtn = document.querySelector(".icon-btn");
+  iconBtn.innerText = ICONS[i];
+  window.localStorage.setItem("iconIndex", i);
+  document.querySelector(".icon-dialog").remove();
+}
+
 function ChangeIcon(e) { /////////////////////////////////////////////////////////////////////
+  /* OLD WAY TO CIYCLE ICONS
   iconIndex++;
   if (iconIndex >= ICONS.length) {
     iconIndex = 0;
   }
   e.target.innerText = ICONS[iconIndex];
   window.localStorage.setItem("iconIndex", iconIndex);
+  */
+  let iconDialog = document.createElement("div");
+  iconDialog.className = "icon-dialog";
+
+  let iconTable = document.createElement("table");
+  iconTable.cellPadding = 0;
+  iconTable.cellSpacing = 2;
+  iconTable.border = 0;
+  iconDialog.appendChild(iconTable);
+
+  const w = 9;
+  const h = Math.ceil(ICONS.length / w);
+
+  for (let y = 0, i = 0; y < h; y++) {
+    let tr = document.createElement("tr");
+    for (let x = 0; x < w; x++, i++) {
+      if (i >= ICONS.length) {
+        break;
+      }
+      let td = document.createElement("td");
+      tr.appendChild(td);
+      let cell = document.createElement("div");
+      cell.className = "cell icon";
+      cell.innerText = ICONS[i];
+      cell.dataset.icon = i;
+      if (i == iconIndex) {
+        cell.className += " selected";
+      }
+      cell.onclick = SelectIcon;
+      td.appendChild(cell);
+    }
+    iconTable.appendChild(tr);
+  }
+
+  document.body.appendChild(iconDialog);
+}
+
+function SwipeLeftDetector(element, callback) { /////////////////////////////////////////////////////////////////////
+  this.element = element;
+  this.callback = callback; // Callback function to be called after a successful swipe
+  this.touchStartX = 0;
+  this.touchEndX = 0;
+  this.mouseStartX = 0;
+  this.mouseEndX = 0;
+  this.element.addEventListener('touchstart', this.onTouchStart.bind(this));
+  this.element.addEventListener('touchend', this.onTouchEnd.bind(this));
+  this.element.addEventListener('mousedown', this.onMouseDown.bind(this));
+  this.element.addEventListener('mouseup', this.onMouseUp.bind(this));
+}
+
+SwipeLeftDetector.prototype.onTouchStart = function(event) {
+  this.touchStartX = event.touches[0].clientX;
+};
+
+SwipeLeftDetector.prototype.onTouchEnd = function(event) {
+  this.touchEndX = event.changedTouches[0].clientX;
+  this.handleSwipe();
+};
+
+SwipeLeftDetector.prototype.onMouseDown = function(event) {
+  this.mouseStartX = event.clientX;
+};
+
+SwipeLeftDetector.prototype.onMouseUp = function(event) {
+  this.mouseEndX = event.clientX;
+  if (this.handleSwipe(true)) {
+    event.preventDefault();
+    return false;
+  }
+};
+
+SwipeLeftDetector.prototype.handleSwipe = function(isMouse = false) {
+  const startX = isMouse ? this.mouseStartX : this.touchStartX;
+  const endX = isMouse ? this.mouseEndX : this.touchEndX;
+  const swipeDistance = startX - endX;
+  if (swipeDistance > 250) {
+    console.log('Swiped left on:', this.element);
+    if (typeof this.callback === 'function') {
+      setTimeout(() => {
+        this.callback(this.element);
+      }, 100);
+      if (isMouse) {
+        return true;
+      }
+    }
+  }
+  return false;
+};
+
+function ClearAnTask(cell) { /////////////////////////////////////////////////////////////////////
+  let task = parseInt(cell.dataset.task);
+  if (store.s) {
+    let postData = [task, -1, ""];
+    GetPostData(postData).then(newStore => {
+      newStore.d = store.d;
+      WriteData(newStore);
+    });
+  }
+  else {
+    let newStore = JSON.parse(JSON.stringify(store));
+    newStore.c[task] = [];
+    WriteData(newStore);
+  }
 }
 
 function DisplayTable() { /////////////////////////////////////////////////////////////////////
@@ -609,10 +742,14 @@ function DisplayTable() { //////////////////////////////////////////////////////
       joinSessionBtn.remove();
     }
 
-    let sessionIdInfo = document.createElement("div");
-    sessionIdInfo.className = "session-id";
-    sessionIdInfo.innerText = store.s;
-    document.body.appendChild(sessionIdInfo);
+    if (!store.p) {
+      if (!document.getElementById("session-id")) {
+        let sessionIdInfo = document.createElement("div");
+        sessionIdInfo.className = "session-id";
+        sessionIdInfo.innerText = store.s;
+        document.body.appendChild(sessionIdInfo);
+      }
+    }
   }
 
   if (showTopBar) {
@@ -707,6 +844,7 @@ function DisplayTable() { //////////////////////////////////////////////////////
         if (store.c) {
           cell.innerText = store.c[i].join("");
         }
+        new SwipeLeftDetector(cell, ClearAnTask);
       } else {
         cell.dataset.an = false;
         if (store.c) {
