@@ -484,7 +484,7 @@ function CheckTask(e) { ////////////////////////////////////////////////////////
       }
     }
     else {
-      if (((newStore?.c?[task]??{})[time]??'').length > 0) {
+      if (((newStore?.c[task]??{})[time]??'').length > 0) {
         newStore.c[task][time] = "";
       }
       else {
