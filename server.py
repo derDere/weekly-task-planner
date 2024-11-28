@@ -4,6 +4,7 @@ from math import e
 import uuid
 import os
 import datetime
+import argparse
 
 
 def to_valid_int(value:object, min:int, max:int, default:int) -> int:
@@ -274,7 +275,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
             return False
 
 
-def run(server_class:type=HTTPServer, handler_class:type=SimpleHTTPRequestHandler, port:int=8000) -> None:
+def run(server_class:type=HTTPServer, handler_class:type=SimpleHTTPRequestHandler, address:str='0.0.0.0', port:int=8000) -> None:
     """
     Start the HTTP server.
 
@@ -283,18 +284,30 @@ def run(server_class:type=HTTPServer, handler_class:type=SimpleHTTPRequestHandle
         handler_class (type): The handler class to use (default is SimpleHTTPRequestHandler).
         port (int): The port on which the server will listen (default is 8000).
     """
-    server_address = ('', port)
+    server_address = (address, port)
     httpd = server_class(server_address, handler_class)
     print(f"Serving on port {port}")
-    httpd.serve_forever()
+    try:
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+        print("Stopping server by KeyboardInterrupt")
+    except Exception as ex:
+        print(f"Stopping server due to exception: {ex}")
+    finally:
+        httpd.server_close()
+    print("Server stopped")
+
+
+def main() -> None:
+    """
+    Main function to parse command line arguments and start the server.
+    """
+    aparser = argparse.ArgumentParser()
+    aparser.add_argument('-p', '--port', type=int, default=8000, help='The port on which the server will listen')
+    aparser.add_argument('-a', '--address', type=str, default='0.0.0.0', help='The address on which the server will listen')
+    args = aparser.parse_args()
+    run(address=args.address, port=args.port)
 
 
 if __name__ == '__main__':
-    import sys
-    if len(sys.argv) == 2:
-        if str(sys.argv[1]).isnumeric():
-            run(port=int(sys.argv[1]))
-        else:
-            print("Invalid port number")
-    else:
-        run()
+    main()
