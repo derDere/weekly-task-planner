@@ -292,7 +292,7 @@ def run(server_class:type=HTTPServer, handler_class:type=SimpleHTTPRequestHandle
 if __name__ == '__main__':
     import sys
     if len(sys.argv) == 2:
-        if isnumeric(sys.argv[1]):
+        if str(sys.argv[1]).isnumeric():
             run(port=int(sys.argv[1]))
         else:
             print("Invalid port number")
