@@ -477,6 +477,18 @@ function CheckTask(e) { ////////////////////////////////////////////////////////
   }
   else {
     let newStore = JSON.parse(JSON.stringify(store));
+    if (!('c' in newStore)) {
+      newStore.c = [];
+      if (newStore.t) {
+        for (let i = 0; i < newStore.t.length; i++) {
+          let l = [];
+          for (let j = 0; j < newStore.t[i][1]; j++) {
+            l.push("");
+          }
+          newStore.c.push(l);
+        }
+      }
+    }
     if (an) {
       newStore.c[task].push(icon);
       while (newStore.c[task].length > 10) {
@@ -484,8 +496,7 @@ function CheckTask(e) { ////////////////////////////////////////////////////////
       }
     }
     else {
-      let content = newStore.c[task][time] | '';
-      if (content.length > 0) {
+      if (newStore.c[task][time].length > 0) {
         newStore.c[task][time] = "";
       }
       else {
