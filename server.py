@@ -81,7 +81,10 @@ def CleanSessionData(data:dict[str,object]) -> dict[str,object]:
 
 
 def SaveSessionData(data:dict[str,object]) -> None:
-  path = f'sessions/{data["s"]}.json'
+  path = 'sessions/'
+  if not os.path.exists(path):
+    os.makedirs(path)
+  path += f'{data["s"]}.json'
   with open(path, 'w') as f:
     json.dump(data, f)
 
