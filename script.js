@@ -390,7 +390,7 @@ function ShowForm(data) { //////////////////////////////////////////////////////
 
 function GetPostData(data) { /////////////////////////////////////////////////////////////////////
   let method = data ? "POST" : "GET";
-  let address = "/" + (store.s ?? "new");
+  let address = document.location.pathname + "/" + (store.s ?? "new");
   let post_body = data ? JSON.stringify(data) : null;
   // ajax request
   let xhr = new XMLHttpRequest();
